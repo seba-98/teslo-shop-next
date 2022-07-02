@@ -1,0 +1,8 @@
+services:
+  teslodb:
+    image: mongo:latest
+    container_name: products-database
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo:/data/db
