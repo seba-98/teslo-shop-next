@@ -6,15 +6,19 @@ import { FullScreenLoading } from '../components/ui';
 import { useProducts } from '../hooks';
 // import { useAppDispatch, useAppSelector } from '../hooks/useReduxHooks';
 // import { getProducts, startGetProducts, endGetProducts } from '../redux/slices/products.slice';
+import { ICompleteProduct } from '../interfaces/shared_interfaces/products';
 
+
+interface Idat{
+  data:ICompleteProduct[] | [],
+  load:boolean,
+  err:boolean
+}
 
 
 const HomePage: NextPage = () => {
 
-  
-  
-
-  const { products, loading } = useProducts('/products');
+  const { products, loading  } =  useProducts('/products');
 
 
   return (
@@ -27,7 +31,6 @@ const HomePage: NextPage = () => {
             loading ?
             <FullScreenLoading />
             :
-            
             <ProductList products={products}/>
           }
         </>

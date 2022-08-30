@@ -5,10 +5,10 @@ import { IUser } from "../../interfaces/server_interfaces";
 
 const userSchema = new Schema({
 
-    name    : { type: String, required:true },
-    email   : { type: String, required:true, unique:true },
-    password: { type: String, required:true, unique:true },
-    phoneNumber:{ type: String, required:true, unique:true, validate:{
+    name       : { type: String, required:true },
+    email      : { type: String, required:true, unique:true },
+    password   : { type: String, required:true, unique:true },
+    phoneNumber: { type: String, required:false, unique:true, validate:{
         validator:(v:string)=>{
             return /^\+(?:[0-9] ?){6,14}[0-9]$/.test(v);
         },

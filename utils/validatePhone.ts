@@ -1,4 +1,6 @@
 export const matchPhone = (phone: string): boolean => {
+
+    if(phone ==='+0000000') return false
   
     const match = String(phone)
         .toLowerCase()
@@ -10,5 +12,5 @@ export const matchPhone = (phone: string): boolean => {
   export const isPhone = (phone: string): string | undefined => {
     return matchPhone(phone) 
       ? undefined
-      : 'Debe ser un número de teléfono válido';
+      : 'Debe ser un número de teléfono válido (incluír el +)';
   }

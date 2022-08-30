@@ -4,7 +4,8 @@ import { ICompleteProduct } from "../../interfaces/shared_interfaces";
 const productSchema= new Schema({
     description:{
         type:String, 
-        required:true
+        required:true,
+        default:''
     },
     images:[{
         type:String, 
@@ -30,8 +31,8 @@ const productSchema= new Schema({
                     default:0
                 },
             }
-            ]
-    ,
+    ],
+    
     slug:{
         type:String,
         required:true,
@@ -39,28 +40,30 @@ const productSchema= new Schema({
     },
     tags:[{
         type:String,
-        required:true
+        required:true,
+        default:''
     }],
     title:{
-
+        type:String,
+        required:true,
+        default:''
     },
     type:{
         type:String,
         enum:{
             values:['shirts','pants','hoodies','hats'],
-            message:'{VALUE} no es un tipo válido'
+            message:'{VALUE} no es un tipo válido',
+            default:'shirts'
         }
-
     },
     gender:{
         type:String,
         enum:{
             values:['men','women','kid','unisex'],
-            message:'{VALUE} no es un genero válido'
+            message:'{VALUE} no es un genero válido',
+            default:'unisex'
         }
-
     },
-
 },
 {
     timestamps: true

@@ -31,7 +31,7 @@ export const loginUser = async (req: NextApiRequest, res: NextApiResponse<IRespo
     
     
     await db.connect();
-    const user=await User.findOne({ email }).lean(); // primero verificamos via mail que la cuenta exista
+        const user=await User.findOne({ email }).lean(); // primero verificamos via mail que la cuenta exista
     await db.disconnect();
     
     

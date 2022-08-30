@@ -90,7 +90,14 @@ export const Navbar = () => {
                 </IconButton>
               </Link>
             </NextLink>
-            <Button onClick={sideMenuChange}>Menú</Button>
+            <Button 
+            onClick={sideMenuChange} 
+            sx={{
+              '&:hover':{
+                color:'white'
+              }
+            }}
+            >Menú</Button>
         </Toolbar>
     </AppBar>
   )

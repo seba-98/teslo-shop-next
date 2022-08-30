@@ -1,3 +1,3 @@
-export * from './ShopLayout';
-export * from './BuysLayout';
+export * from './AdminLayout';
 export * from './AuthLayout';
+export * from './ShopLayout';

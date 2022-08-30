@@ -1,14 +1,23 @@
-import { Chip, Grid, Link, Typography } from '@mui/material';
 import React from 'react';
+import { GetServerSideProps, NextPage } from 'next'
+import { Chip, Grid, Link, Typography } from '@mui/material';
 import { ShopLayout } from '../../components/layouts';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import NextLink from 'next/link';
+import { getOrdersByUser } from '../../api-rest/ssg-ssr-request-functions/getData';
+import { getSession } from 'next-auth/react';
+import { IGetOrder } from '../../interfaces/server_interfaces/orders';
 
-const HistoryPage = () => {
+interface Props{
+    orders:IGetOrder[]
+}
 
+const HistoryPage:NextPage<Props> = ({orders}) => {
+
+    
 
     const columns:GridColDef[] = [
-        {field: 'id', headerName:'ID', width:100},
+        {field: 'id', headerName:'ID', width:300},
         {field: 'fullName', headerName:'Nombre completo', width:300},
         {
             field: 'paid', 
@@ -31,7 +40,7 @@ const HistoryPage = () => {
                 sortable:false,
                 renderCell:(params:GridValueGetterParams)=>{
                     return(
-                        <NextLink href={`/orders/${params.row.orderPage}`} passHref>
+                        <NextLink href={`/orders/${params.row.orderId}`} passHref>
                             <Link variant='body1' underline='always'>
                                 Ver orden
                             </Link>
@@ -42,20 +51,13 @@ const HistoryPage = () => {
 
     ]
 
-    const rows = [
-        { id:1, fullName:'seba belettieri', paid:false, orderPage:1},
-        { id:2, fullName:'juan belettieri', paid:true, orderPage:2},
-        { id:4, fullName:'jose belettieri', paid:false, orderPage:3},
-        { id:5, fullName:'jose belettieri', paid:true, orderPage:4},
-        { id:6, fullName:'jose belettieri', paid:false, orderPage:5},
-        { id:7, fullName:'jose belettieri', paid:false, orderPage: 6},
-        { id:8, fullName:'jose belettieri', paid:true, orderPage:7 },
-        { id:9, fullName:'jose belettieri', paid:false, orderPage:8},
-        { id:10, fullName:'jose belettieri', paid:false, orderPage:9},
-        { id:11, fullName:'jose belettieri', paid:true, orderPage:10},
-        { id:12, fullName:'jose belettieri', paid:false, orderPage:11},
-        { id:13, fullName:'jose belettieri', paid:false, orderPage:12},
-    ]
+    const rows = orders.map((order, idx)=>({
+        id:idx+1,
+        orderId:order._id,
+        fullName:order.allPaymentData!.name,
+        paid:order.isPaid,
+        orderPage:1
+    }))
 
   return (
     <ShopLayout title={'Historial de ordenes'} pageDescription={'Historial de ordenes del cliente'}>
@@ -78,3 +80,26 @@ const HistoryPage = () => {
 }
 
 export default HistoryPage
+
+
+
+
+export const getServerSideProps: GetServerSideProps = async ({req}) => {
+    
+    const session:any = await getSession({req})
+    const userOrders = await getOrdersByUser(session.user._id);
+
+    if( !session ){
+        return {
+            redirect:{
+                destination:'/auth/login?q=/orders/history',
+                permanent:false
+            }
+        }
+    }
+    return {
+        props: {
+            orders:userOrders
+        }
+    }
+}

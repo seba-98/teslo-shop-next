@@ -7,6 +7,7 @@ export interface IUser{
     email      :string;
     phoneNumber:string;
     password?  :string;
+    location?  :string; 
     role       :IRole;
 
     createdAt? :string;
@@ -21,6 +22,7 @@ export type IResponseDataUser =
         _id:string;
         email:string;
         phoneNumber:string;
+        location?:string,
         role:string;
         name:string;
     },

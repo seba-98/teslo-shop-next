@@ -1,18 +1,20 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import Cookies from "js-cookie";
+import { IAllPaymentData, IUserPaymentData } from "../../interfaces/shared_interfaces";
 import { AppThunk } from "../store";
 
-interface initialState{
-    location:string,
-    phoneNumber:string,
-    quantityProducts:number,
-    subTotal:number,
-    taxes:number,
-    total:number
-}
 
-const initialState:initialState = {
-    location:'',
-    phoneNumber:'',
+
+const initialState:IAllPaymentData = {
+    name:undefined,
+    lastName:undefined,
+    adress:undefined,
+    secondAdress:undefined,
+    country:undefined,
+    postalCode:undefined,
+    city:undefined,
+    phoneNumber:undefined,
+
     quantityProducts:0,
     subTotal:0,
     taxes:0,
@@ -24,14 +26,13 @@ const paymentSlices=createSlice({
     name:'payment',
     initialState:initialState,
     reducers:{
-        loadPaymentData(state, action:PayloadAction<initialState>){
-
-            return state = action.payload;
-        }
+        loadPaymentData(state, action:PayloadAction<IAllPaymentData | IUserPaymentData>){
+            return state ={...state, ...action.payload} ;
+        },
     }
 })
 
-export const actionLoadPaymentData=():AppThunk=>{
+export const actionLoadPaymentData=():AppThunk=>{ //CARGA DE DATOS DE PAGO  *COMPRUEBA EN CADA CAMBIO DE PAGINA*
 
     return async(dispatch, getState)=>{
 
@@ -49,14 +50,29 @@ export const actionLoadPaymentData=():AppThunk=>{
             quantityProducts,
             subTotal,
             taxes,
-            total
+            total,
         }
 
         dispatch( loadPaymentData(paymentState) );
     }
-
 }
 
-export const { loadPaymentData }= paymentSlices.actions;
+
+export const actionLoadUserPaymentData=(data:IUserPaymentData):AppThunk=>{ //CARGA DE DATOS DE USUARIO EN EL FORMULARIO DE Adress
+
+        return async(dispatch, getState)=>{
+
+            Cookies.set('name',         data.name!); 
+            Cookies.set('lastName',     data.lastName!); 
+            Cookies.set('adress',       data.adress!); 
+            Cookies.set('secondAdress', data.secondAdress! ||  ''); 
+            Cookies.set('postalCode',   data.postalCode!);
+            Cookies.set('country',      data.country!); 
+            Cookies.set('city',         data.city!); 
+            Cookies.set('phoneNumber',  data.phoneNumber!); 
+            dispatch( loadPaymentData( data ) );
+        }
+}
+export const { loadPaymentData } = paymentSlices.actions;
 
 export default paymentSlices.reducer;

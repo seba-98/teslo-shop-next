@@ -4,7 +4,7 @@ import { IData } from '../../../../interfaces/server_interfaces';
 
 const { getProductBySlug } = productGet;
 
-export default function (req: NextApiRequest, res: NextApiResponse<IData>) {
+export default function handler(req: NextApiRequest, res: NextApiResponse<IData>) {
 
 
     switch (req.method) {
@@ -14,7 +14,6 @@ export default function (req: NextApiRequest, res: NextApiResponse<IData>) {
         default:
             return res.status(200).json({ message: 'Bad request' })
     }
-
 
 
 }

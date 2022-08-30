@@ -1,10 +1,9 @@
-import { Box, Button, CardActionArea, CardMedia, Grid, Link, Typography } from "@mui/material";
+import { Box, Button, CardActionArea, CardMedia, colors, Grid, Link, Typography } from "@mui/material";
 import NextLink from "next/link";
-import { FC, useEffect } from "react"
+import { FC } from "react"
 import { ItemCounter } from "../ui";
 import { useAppSelector, useAppDispatch } from '../../hooks/useReduxHooks';
 import { removeCartAction, updateQuantityAction } from "../../redux/slices";
-import { useRouter } from "next/router";
 import { ICartProduct } from '../../interfaces/client_interfaces/cart';
 
 interface Props{
@@ -15,21 +14,11 @@ interface Props{
 export const CartList:FC<Props> = ({editable=false}) => {
     
     const dispatch = useAppDispatch();
-    const router = useRouter();
     const updateStateInCounter=(product:ICartProduct)=> dispatch( updateQuantityAction(product) );
 
    
+    const { cart } = useAppSelector(state=>state.cart);
 
-    const { cart, loaded } = useAppSelector(state=>state.cart);
-
-    useEffect(() => {
-        cart.length < 1 && router.push('/cart/empty')
-        
-    }, [ cart, router ])
-    
-
-    
-    if(loaded){
         return (
             <>
             {cart.map( product =>(
@@ -57,11 +46,11 @@ export const CartList:FC<Props> = ({editable=false}) => {
                                 (
                                 <>
                                     <ItemCounter 
-                                    updatedState={(value:number)=>{
+                                    updatedState={ (value:number) =>{
                                         updateStateInCounter({...product, quantity: value})
                                     }} 
-                                    baseQuantity={product.quantity} 
-                                    limitQuantity={product.inStock} 
+                                    baseQuantity={ product.quantity } 
+                                    limitQuantity={ product.inStock } 
                                     location='cart'                                      
                                     />
                                 </>
@@ -76,7 +65,18 @@ export const CartList:FC<Props> = ({editable=false}) => {
                         <Typography variant="subtitle1">{`$${product.price}`}</Typography>
 
                         { editable &&
-                            <Button variant='text' color="secondary" onClick={ ()=> dispatch( removeCartAction( product ) ) }>
+                            <Button
+                                variant='text'
+                                onClick={()=> dispatch( removeCartAction( product ) ) }
+                                sx={{
+                                    color:'red',
+                                    '&:hover':{
+                                        border:'1px solid red',
+                                        color:'red',
+                                        backgroundColor:'white',
+                                    },
+                                }}
+                            >
                                 Remover
                             </Button>
                         }       
@@ -86,7 +86,4 @@ export const CartList:FC<Props> = ({editable=false}) => {
             
             </>
             )
-        }    
-
-        return <h1>cargando...</h1>
     }

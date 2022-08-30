@@ -1,10 +1,7 @@
 import Head from "next/head"
-import { FC, useEffect } from "react"
+import { FC } from "react"
 import { Navbar } from "../ui/"
 import SideMenu from '../ui/SideMenu';
-import { useAppDispatch, useAppSelector } from '../../hooks/useReduxHooks';
-import { getStateFromCookies } from '../../redux/slices/cart.slices';
-import { actionLoadPaymentData } from "../../redux/slices/payment.slices";
 
 interface Props{
     title:string,
@@ -15,17 +12,6 @@ interface Props{
 
 export const ShopLayout:FC<Props> = ({children, title, pageDescription='Teslo shop', imageFullUrl}) => {
 
-    const dispatch = useAppDispatch();
-    const { cart } = useAppSelector(state=>state.cart);
-
-
-    useEffect(() => {
-        dispatch( getStateFromCookies() );
-    }, [dispatch])
-
-    useEffect(() => {
-        dispatch( actionLoadPaymentData() );
-    }, [cart, dispatch])
     
     
   return (
@@ -50,7 +36,9 @@ export const ShopLayout:FC<Props> = ({children, title, pageDescription='Teslo sh
             margin:'80px auto',
             maxWidth: '1440px',
             padding: '0px 30px'
-        }}>
+        }}
+        className='fadeIn'
+        >
             { children }
         </main>
         

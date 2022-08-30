@@ -13,6 +13,11 @@ export const ActiveLink:FC<Props> = ({text, href}) => {
     
     const {asPath}=useRouter();
 
+    const style={
+      '&:hover':{
+        color:'white'
+      }
+    }
 
 
   return (
@@ -20,9 +25,9 @@ export const ActiveLink:FC<Props> = ({text, href}) => {
         <Link >
         {
          asPath === href ?
-            <Button color="primary" className='fadeIn'>{text}</Button>
+            <Button color="primary" className='fadeIn' sx={style}>{text}</Button>
             :
-            <Button className='fadeIn'>{text}</Button>
+            <Button className='fadeIn' sx={style}>{text}</Button>
         }
         </Link>
     </NextLink>

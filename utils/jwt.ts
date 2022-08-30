@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import {SignJWT, jwtVerify, type JWTPayload} from 'jose';
 
 export const signToken=(_id:string, email:string)=>{
 
@@ -18,9 +19,14 @@ export const signToken=(_id:string, email:string)=>{
 
 export const isValidToken=( token:string ):Promise<string>=>{
 
-    if( !process.env.JWT_SECRET_SEED)  throw new Error('-Error fatal- No hay semilla JWT- Revisar variables de entorno');
+    if( !process.env.JWT_SECRET_SEED)  throw new Error(' No hay semilla JWT- Revisar variables de entorno');
     
+    if(token.length < 10) {
+        Promise.reject('JWT No es válido.')
+    }
+
     return new Promise((resolve, reject)=>{
+
 
         try {
 
@@ -36,8 +42,6 @@ export const isValidToken=( token:string ):Promise<string>=>{
         } catch (error) {
             reject('JWT No es válido.');
         }
-
-
     })
-
 }
+

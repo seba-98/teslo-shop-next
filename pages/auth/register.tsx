@@ -1,56 +1,39 @@
 import { ErrorOutline } from '@mui/icons-material';
 import { Box, Button, Grid, TextField, Typography, Link, Chip } from '@mui/material'
-import axios from 'axios';
 import NextLink from 'next/link';
-import React, { useState } from 'react'
+import React from 'react'
 import { useForm } from 'react-hook-form';
-import tesloApiBase from '../../axios-tesloApi/tesloApi';
 import { AuthLayout } from '../../components/layouts'
 import { validatePhone } from '../../utils';
 import { isEmail } from '../../utils/validateEmail';
-
-interface IFormData{
-    name           :string;
-    phoneNumber    :string;
-    email          :string;
-    password       :string;
-    confirmPassword:string;
-}
+import {  IFormRegister } from '../../interfaces/client_interfaces/authInterfaces';
+import { useAppDispatch, useAppSelector } from '../../hooks/useReduxHooks';
+import { actionRegister } from '../../redux/slices';
+import { useRouter } from 'next/router';
+import { GetServerSideProps } from 'next';
+import { getSession } from 'next-auth/react';
 
 
 
  const Register = () => {
 
+     const dispatch = useAppDispatch();  
+     const {auth} = useAppSelector(state=>state);
 
-    const {register, handleSubmit, reset, formState:{errors}, getValues,watch }=useForm<IFormData>();
-    const [reqError, setReqError] = useState<string[]>([]);
-    const {name,password, confirmPassword}= getValues()
+    const {register, handleSubmit, formState:{errors}, watch }=useForm<IFormRegister>();
+    const router = useRouter();
 
-    const removeError=()=> setTimeout(()=>{ setReqError([]) },10000)
-    const matchPasswords=()=> password !== confirmPassword && setReqError(['Las contraseñas deben coincidir'])
+    const destination = router.query.p?.toString() || '/'; 
+
+    const onSubmit=(formData:IFormRegister)=> {
+
+        dispatch( actionRegister(formData, destination) );
+        
+        // router.replace(destination)
+    };
+
+  
     
-
-
-    const onSubmit=async(formData:IFormData)=>{
-
-   
-        try {
-            const {data} = await tesloApiBase.post('/user/register', formData);
-            reset();
-            
-        } catch (error) {
-            
-            if(axios.isAxiosError(error)){
-
-                const {errors} = error.response?.data as {errors:string[]};
-                errors.length > 0 && setReqError(errors);
-            }
-            removeError();
-            
-        }
-
-    }
-
 
     return (
         <AuthLayout title={'Registrarse'} pageDescription={'Registrar usuario'}>
@@ -65,8 +48,9 @@ interface IFormData{
                             <Typography variant='h1' component='h1'>Crear cuenta</Typography>
                         </Grid>
                             {
-                                reqError.length > 0 &&
-                                reqError.map(e=>(
+                                auth.error && typeof(auth.error) !== 'string' &&
+
+                                auth.error.map(e=>(
                                     <Chip 
                                         key={e}
                                         label={e}
@@ -75,8 +59,8 @@ interface IFormData{
                                         className='fadeIn'
                                         sx={{my:'10px'}}
                                     />
-                                ))
-                            }
+                                    ))
+                                }
 
 
                         <Grid item xs={ 12 }>
@@ -86,6 +70,8 @@ interface IFormData{
                             fullWidth
                             {...register('name',{
                                 required:'Escriba su nombre de usuario',
+                                minLength:{value:1, message:'El nombre debe tener al menos 2 caracteres'},
+                                maxLength:{value:10, message:'El nombre puede llevar hasta 20 caracteres'},
                                 
                             })}
                             error={!!errors.name}
@@ -104,8 +90,6 @@ interface IFormData{
                                 {...register('phoneNumber',{
                                     required:'El teléfono es requerido',
                                     validate:validatePhone.isPhone,
-                                    minLength:{value:1, message:'El nombre debe tener al menos 2 caracteres'},
-                                    maxLength:{value:10, message:'El nombre puede llevar hasta 20 caracteres'},
                                 })}
                                 error={ !!errors.phoneNumber }
                                 helperText={errors.phoneNumber?.message}
@@ -180,7 +164,7 @@ interface IFormData{
                         </Grid>
 
                         <Grid item xs={ 12 } display='flex' justifyContent='end'>
-                            <NextLink href='/auth/login' passHref>
+                            <NextLink href={ `/auth/login?p=${destination}` } passHref>
                                 <Link >
                                     ¿Ya tienes una cuenta?
                                 </Link>
@@ -193,6 +177,26 @@ interface IFormData{
 
         </AuthLayout>
     )
+}
+
+
+export const getServerSideProps: GetServerSideProps = async ({req, query}) => {
+
+    const session = await getSession({ req });
+
+    const { p='/' }= query as { p:string } //query de la página de login o '/'
+
+    if(session){
+        return{
+            redirect:{
+                destination:p,
+                permanent:false
+            }
+        }
+    }
+    return {
+        props: {}
+    }
 }
 
 export default Register;

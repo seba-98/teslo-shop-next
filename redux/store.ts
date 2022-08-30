@@ -2,12 +2,14 @@ import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import uiSlices from "./slices/ui.slices";
 import cartSlices from "./slices/cart.slices";
 import paymentSlices from "./slices/payment.slices";
+import authSlices from "./slices/auth.slices";
 
 const store = configureStore({
     reducer: {
         ui: uiSlices,
         cart: cartSlices,
-        payment: paymentSlices
+        payment: paymentSlices,
+        auth: authSlices
     }
 })
 

@@ -4,7 +4,7 @@ export type IValidSizes = 'XS'|'S'|'M'|'L'|'XL'|'XXL'|'XXXL' | undefined;
 export type IValidType = 'shirts'|'pants'|'hoodies'|'hats';
 
 
-export type IValidSize ={ value:IValidSizes, inStock:number, price:number }
+export type IValidSize ={ value:IValidSizes, inStock:number, price:number, _id?:string }
 
 
 export interface ICompleteProduct{

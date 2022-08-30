@@ -7,13 +7,28 @@ import { User } from '../../models';
 
 export const checkJWT= async (req: NextApiRequest, res: NextApiResponse<IResponseDataUser>) => {
 
-    const { token='' }=req.cookies as {token:string};  
-
-    let userId = '';
-
+    
     try {
+        const { token='' }=req.cookies as {token:string};  
+    
+        let userId = '';
 
         userId = await jwt.isValidToken(token);   
+
+        await db.connect();
+            const user = await User.findById( userId ).select(" _id  email role name phoneNumber").lean() ;
+        await db.disconnect();
+    
+    
+        if(!user) return res.status(400).json( { message: 'No existe el usuario con ese id'});
+        
+    
+        const {_id, email }=user;
+    
+        return res.status(200).json({
+            token:jwt.signToken(_id, email),
+            user
+        })
 
     } catch (error) {                             
         
@@ -22,20 +37,5 @@ export const checkJWT= async (req: NextApiRequest, res: NextApiResponse<IRespons
         })
     }
     
-
-    await db.connect();
-        const user = await User.findById( userId ).select(" _id  email role name ").lean() ;
-    await db.disconnect();
-
-
-    if(!user) return res.status(400).json( { message: 'No existe el usuario con ese id'});
-    
-
-    const {_id, email }=user;
-
-    return res.status(200).json({
-        token:jwt.signToken(_id, email),
-        user
-    })
    
 }

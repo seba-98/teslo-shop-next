@@ -1,8 +1,9 @@
 import { createTheme } from '@mui/material/styles';
-import { red,  } from '@mui/material/colors';
+// import { red,  } from '@mui/material/colors';
 
 
 export const lightTheme = createTheme({
+
   palette: {
     mode: 'light',
     primary: {
@@ -38,17 +39,26 @@ export const lightTheme = createTheme({
       styleOverrides: {
         h1: {
           fontSize: 30,
-          fontWeight: 600
+          fontWeight: 600,
+          '@media (max-width:600px)': {
+            fontSize: 20,
+          },
         },
         h2: {
           fontSize: 20,
-          fontWeight: 400
+          fontWeight: 400,
+          '@media (max-width:600px)': {
+            fontSize: 15,
+          },
+
         },
+
         subtitle1: {
           fontSize: 18,
           fontWeight: 600
         }
       }
+
     },
 
 
@@ -66,9 +76,11 @@ export const lightTheme = createTheme({
           borderRadius: 10,
           ":hover": {
             backgroundColor: '#000000',
+            color:'white',
             transition: 'all 0.3s ease-in-out'
           }
-        }
+        },
+
       }
     },
 

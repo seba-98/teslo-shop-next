@@ -4,20 +4,28 @@ import { price } from '../../utils'
 import OrderSumaryGrid from './OrderSumaryGrid'
 import NextLink from 'next/link';
 import { useAppSelector } from '../../hooks/useReduxHooks';
+import { IOrder } from '../../interfaces/server_interfaces/orders';
 
 interface Props{
-    editable:boolean
+    editable:boolean,
+    data:{
+        quantityProducts:number, 
+        subTotal:number,
+        taxes:number,
+        total:number,
+    }
+
 }
 
 
-export const OrderSumary:FC<Props> = ({editable=true}) => {
+export const OrderSumary:FC<Props> = ({editable=true, data}) => {
 
     const {
         quantityProducts, 
         subTotal,
         taxes,
         total
-      } = useAppSelector(state => state.payment);
+      } = data;
     
 
 

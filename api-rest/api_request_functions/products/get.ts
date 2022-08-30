@@ -19,11 +19,11 @@ export const getProducts = async(req:NextApiRequest, res:NextApiResponse<IData>)
 
     await db.connect()
                                     //si no hay gender la condicion queda vacia y trae todos los artículos
-      const products = await Product.find( condition ).select('title images sizes slug -_id').lean();
+      const products = await Product.find( condition ).sort({title:'asc'}).select('title images sizes slug -_id ').lean();
 
     await db.disconnect()
 
-  res.status(200).json(products)
+    return res.status(200).json(products)
     
 }
 
@@ -33,7 +33,7 @@ export const getProductBySlug = async(req:NextApiRequest, res:NextApiResponse<ID
   const{slug}=req.query
 
   await db.connect();
-    const product = await Product.findOne({ slug }).select('title images sizes slug -_id').lean();
+    const product = await Product.findOne({ slug }).select('sizes').lean();
   await db.disconnect();
 
   if(!product ) return res.status(200).json({message: 'No existe el artículo' });

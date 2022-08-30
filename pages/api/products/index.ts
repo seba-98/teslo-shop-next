@@ -4,11 +4,11 @@ import { IData } from '../../../interfaces/server_interfaces';
 
 const {getProducts} = productGet;
 
-export default function (req: NextApiRequest, res: NextApiResponse<IData>) {
+export default function handler(req: NextApiRequest, res: NextApiResponse<IData>) {
 
     switch (req.method) {
         case 'GET':
-            return dbErrors(getProducts(req, res), res); 
+            return dbErrors( getProducts(req, res), res ); 
     
         default:
             return res.status(400).json({

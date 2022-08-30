@@ -3,14 +3,29 @@ import useSWR, { SWRConfiguration } from 'swr';
 import { ICompleteProduct } from '../interfaces/shared_interfaces';
 
 
-export const useProducts = ( url:string  ) => {                                  //LA DATA GENERADA EN LA PETICION SE ALMACENARÁ EN CACHE
-                                                                                //POR LO TANTO AL SALIR DE LA PÁGINA Y VOLVER A INGRESAR NO SE VOLVERÁ A REALIZAR
-    const { data, error } = useSWR<ICompleteProduct[]>(`/api/${url}`, );                 //A NO SER QUE LOS DATOS HALLAN CAMBIADO en la  base de datos
+export const useProducts = ( url:string  ) => { 
     
-    return {
-        products:data || [],
-        loading: !data && !error,
-        isErr: error
+    try{
+        const { data:products, error:err } =  useSWR<ICompleteProduct[]>(`/api/${url}`, );    
+
+        return {
+            products:products || [],
+            loading: !products && !err,
+            isErr: err
+        }
     }
+    catch(error){
+
+        console.log(error);
+        
+        
+        return {
+            products: [],
+            loading: false,
+            isErr: error
+        }
+    }
+
+
 }
 
