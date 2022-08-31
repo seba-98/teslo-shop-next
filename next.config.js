@@ -7,6 +7,9 @@ const nextConfig = {
     // number of pages that should be kept simultaneously without being disposed
     pagesBufferLength: 5,
   },
+  images:{
+    domains:['res.cloudinary.com', 'localhost']
+  },
   experimental:{
     outputStandalone:true
   }

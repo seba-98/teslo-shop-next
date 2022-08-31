@@ -4,9 +4,9 @@ import { dbErrors } from "../../../../api-rest/api_request_functions";
 import { db } from "../../../../api-rest/db";
 import { Product } from "../../../../api-rest/models";
 import { ICompleteProduct } from "../../../../interfaces/shared_interfaces";
-import {v2 as cloudinary} from 'cloudinary';
+import { v2 as cloudinary } from 'cloudinary';
 
-
+cloudinary.config( process.env.CLOUDINARY_URL || '' );
 type Data = { message: string } | { products: ICompleteProduct[] } | { error: string }
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
@@ -28,12 +28,21 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
 
 
 
+    //https://res.cloudinary.com/dj1tlztph/image/upload/v1661899182/fm0zzcr9qigchvez21o2.png
  
-const deleteCloudinaryImg=async()=>{
+const deleteCloudinaryImg=async(deletedImages:string[])=>{
 
-    // await cloudinary.
-
-
+    deletedImages.forEach( async(img)=>{
+        try {
+            const fileId= img.substring( img.lastIndexOf('/') + 1 ).split('.')[0];
+            await cloudinary.uploader.destroy( fileId );
+            
+        } catch (error) {
+            console.log(error);
+            
+        }
+    })
+    
 }
     
 const getProducts=async(req: NextApiRequest, res: NextApiResponse<Data>)=>{
@@ -43,43 +52,49 @@ const getProducts=async(req: NextApiRequest, res: NextApiResponse<Data>)=>{
     
     return res.status(200).json({ products });
 }
+
 const updateProducts=async(req: NextApiRequest, res: NextApiResponse<Data>)=>{
 
-    const { _id='', images=[]  } = req.body as ICompleteProduct;
-
+    const { _id='', images=[], deletedImages=[]  } = req.body as ICompleteProduct;
+    
+    const bodyData ={ ...req.body} as ICompleteProduct;
+   
     if( !mongoose.isValidObjectId(_id) ) return res.status(400).json({
         error:'Producto no existe'
     })
     if( images.length < 2 ) return res.status(400).json({
         error:'Son necesarias 2 imagenes'
     })
+
+    await deleteCloudinaryImg(deletedImages);
     
     await db.connect();
-    const currentProduct = await Product.findById(_id);
     
-    if(!currentProduct) throw new Error('Producto no encontrado');
+        const currentProduct = await Product.findById(_id);
+        
+        if(!currentProduct) throw new Error('Producto no encontrado');
 
-    await currentProduct.update( req.body );
+        delete bodyData.deletedImages
+        await currentProduct.update( bodyData );
     
     await db.disconnect();
     
     return res.status(200).json({
         message:'Success'    
     });
-    
-    
 }
 
 const createProduct=async(req: NextApiRequest, res: NextApiResponse<Data>)=>{
     
-    const { images=[], slug } = req.body as ICompleteProduct; 
+    const { images=[], slug, deletedImages=[] } = req.body as ICompleteProduct; 
+    const bodyData ={ ...req.body} as ICompleteProduct;
 
-    console.log(req.body);
-    
 
     if( images.length < 2 ) return res.status(400).json({
         error:'Son necesarias 2 imagenes'
     });
+
+    await deleteCloudinaryImg(deletedImages);
 
 
     await db.connect();
@@ -87,7 +102,8 @@ const createProduct=async(req: NextApiRequest, res: NextApiResponse<Data>)=>{
         const existProduct = await Product.findOne({ slug }).lean();
         if( existProduct ) return res.status(400).json({ error:'Ya existe producto con ese slug' })
 
-        const newProduct=new Product( req.body );
+        delete bodyData.deletedImages
+        const newProduct=new Product( bodyData );
         await newProduct.save();
 
     await db.disconnect();

@@ -3,6 +3,7 @@ import NextLink from 'next/link';
 import React, { FC, useMemo, useState } from 'react';
 import { ICompleteProduct } from '../../interfaces/shared_interfaces/index';
 import shimer from '../../styles/shimer.module.css';
+import { processUrl } from '../../utils/processImageUrl';
 
 interface Props{
   product:ICompleteProduct
@@ -13,7 +14,8 @@ export const ProductCard:FC<Props> = ({ product }) => {
   const [mouseEnter, setMouseEnter] = useState(false);
   const [onLoadImg, setOnLoadImg] = useState(false);
 
- const ChangeImage= useMemo(() =>  mouseEnter ? `/products/${product.images[1]}`  : `/products/${product.images[0]}`, [mouseEnter, product.images]);
+
+ const ChangeImage= useMemo(() =>  mouseEnter ? processUrl(product.images[1]) : processUrl(product.images[0]), [mouseEnter, product.images]);
 
  const onLoadImage=()=> setOnLoadImg(true);
 

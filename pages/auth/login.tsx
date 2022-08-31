@@ -5,7 +5,7 @@ import NextLink from 'next/link';
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import { AuthLayout } from '../../components/layouts/AuthLayout';
-import { validateEmail } from '../../utils';
+import { isEmail } from '../../utils';
 import { IFormLogin } from '../../interfaces/client_interfaces/authInterfaces';
 import { useAppSelector, useAppDispatch } from '../../hooks/useReduxHooks';
 import { useRouter } from 'next/router';
@@ -76,7 +76,7 @@ const LoginPage = () => {
                             fullWidth
                             {...register('email',{
                                 required:'Ingrese su email',
-                                validate: validateEmail.isEmail
+                                validate: isEmail
                             })}
                             error={ !!errors.email }
                             helperText={errors.email?.message}

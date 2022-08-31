@@ -5,6 +5,7 @@ import { ItemCounter } from "../ui";
 import { useAppSelector, useAppDispatch } from '../../hooks/useReduxHooks';
 import { removeCartAction, updateQuantityAction } from "../../redux/slices";
 import { ICartProduct } from '../../interfaces/client_interfaces/cart';
+import { processUrl } from '../../utils/processImageUrl';
 
 interface Props{
     editable?:boolean
@@ -28,7 +29,7 @@ export const CartList:FC<Props> = ({editable=false}) => {
                         <NextLink href={`/product/${product.slug}`} passHref>
                             <Link>
                                 <CardActionArea>
-                                    <CardMedia image={`/products/${ product.image }`}
+                                    <CardMedia image={ processUrl(product.image) }
                                     component='img'
                                     sx={{borderRadius:'5px'}}
                                     >

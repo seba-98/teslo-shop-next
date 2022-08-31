@@ -20,14 +20,12 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
 
     switch (req.method) {
         case 'POST':
-            
             return dbErrors( uploadFiles(req, res), res );
-    
+
         default:
             return res.status(400).json({ message: 'Bad request' });
         }
     }
-
 
     
     
@@ -42,7 +40,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
         return new Promise((resolve, reject)=>{
             const form = new formidable.IncomingForm();
             form.parse(req, async(err, fields, files)=>{
-                console.log(err, fields, files);
 
                 if(err) {
                     return reject(err);
@@ -58,7 +55,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
     const uploadFiles=async(req: NextApiRequest, res: NextApiResponse<Data>)=>{
         
         try {
-
             const imageUrl = await parseImages(req);
 
             return res.status(200).json({ message: imageUrl });

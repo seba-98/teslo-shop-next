@@ -7,7 +7,7 @@ import useSWR, { useSWRConfig } from 'swr';
 import { AdminLayout } from '../../../components/layouts';
 import { FullScreenLoading } from '../../../components/ui';
 import { ICompleteProduct } from '../../../interfaces/shared_interfaces';
-import { deleteProduct, findSize, price } from '../../../utils';
+import { deleteProduct, findSize, price, processUrl } from '../../../utils';
 import Image from 'next/image';
 import NextLink from 'next/link';
 
@@ -63,7 +63,7 @@ const ProductsPage:NextPage= () => {
             renderCell:(({row}:GridValueGetterParams)=>(
                 <NextLink passHref href={`/product/${row.slug}`}>
                     <Link >
-                        <Image alt='Product image' src={`/products/${row.img}`} width={100} height={100} />
+                        <Image alt='Product image' src={ processUrl(row.img) } width={100} height={100} />
                     </Link>
                 </NextLink>
             ))

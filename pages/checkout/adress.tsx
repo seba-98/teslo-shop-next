@@ -166,6 +166,7 @@ const AdressPage:FC = () => {
                                     select
                                     error={!!errors.country}
                                     helperText={errors.country?.message}
+                                    defaultValue={countries[0]}
                                     {
                                         ...register('country',{
                                             required:'Seleccione un país'

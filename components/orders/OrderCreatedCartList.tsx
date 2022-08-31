@@ -2,6 +2,7 @@ import { Box, CardActionArea, CardMedia, Grid, Link, Typography } from "@mui/mat
 import NextLink from "next/link";
 import { FC } from "react"
 import { IOrderItem } from '../../interfaces/server_interfaces/orders';
+import { processUrl } from "../../utils";
 
 interface Props{
     items:IOrderItem[]
@@ -20,7 +21,7 @@ export const OrderCreatedCartList:FC<Props> = ({items=[]}) => {
                         <NextLink href={`/product/${product.slug}`} passHref>
                             <Link>
                                 <CardActionArea>
-                                    <CardMedia image={`/products/${ product.image }`}
+                                    <CardMedia image={ processUrl(product.image) }
                                     component='img'
                                     sx={{borderRadius:'5px'}}
                                     >

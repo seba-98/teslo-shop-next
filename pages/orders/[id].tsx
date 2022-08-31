@@ -122,7 +122,6 @@ const OrderPage:FC<Props> = ({order}) => {
                             });
                           }}
                           onApprove={(data, actions) => {
-                            console.log(data);
                             return actions.order!.capture().then((details) => paypalPay(details));
                           }}
                         />

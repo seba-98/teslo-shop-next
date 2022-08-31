@@ -20,5 +20,6 @@ export interface ICompleteProduct{
     gender: 'men'|'women'|'kid'|'unisex',
     createdAt?:string,
     updatedAt?:string,
-
+    deletedImages?:string[]
 }
+

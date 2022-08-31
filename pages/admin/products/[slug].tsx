@@ -10,6 +10,7 @@ import tesloApiBase from '../../../axios-tesloApi/tesloApi';
 import { defaultSizes } from '../../../utils/defaultSizes';
 import { Product } from '../../../api-rest/models';
 import { useRouter } from 'next/router';
+import { processUrl } from '../../../utils/processImageUrl';
 
 type IValidGender = 'men' |'women' |'kid' |'unisex'
 
@@ -26,7 +27,8 @@ interface IFormData{
     tags            : string[];
     title           : string;
     type            : IValidType;
-    gender          : 'men'|'women'|'kid'|'unisex',
+    gender          : 'men'|'women'|'kid'|'unisex';
+    deletedImages  : string[];
 }
 
 interface Props {
@@ -56,7 +58,14 @@ const ProductAdminPage:FC<Props> = ({ product, method='PUT' }) => {
         getValues,
         formState:{errors},
         watch,
-    } = useForm({ defaultValues: product });
+    } = useForm(
+        { 
+        defaultValues: {
+            ...product,
+            deletedImages:[] as string[]
+        } 
+        });
+    
 
     useEffect(() => {
      const subscription = watch((value, {name, type})=>{
@@ -122,18 +131,21 @@ const ProductAdminPage:FC<Props> = ({ product, method='PUT' }) => {
     }
 
     const onChangeSize=(size:IValidSize)=>{
-        const currentSizes = getValues('sizes');
-        if( currentSizes.some( s=> s.value === size.value  ) ){
-            const updateSizes = currentSizes.filter(s=> s.value !== size.value);
-            setValue('sizes', updateSizes, {shouldValidate:true});
-        }
-        else{
-            setValue('sizes', [...currentSizes, size ], {shouldValidate:true});
-        }
-    }
 
+        size.inStock =  size.inStock > 0 ? 0 : 1;
+        
+        setValue('sizes',  
+        getValues('sizes').map(s=>{
+            if(s.value === size.value){
+                return size;
+            } 
+            return s;
+        }),
+        {shouldValidate:true});
+    }
     
-    const validateSize=( size:IValidSize )=> getValues('sizes').some(s=> s.value === size.value);
+    
+    const validateSize=( size:IValidSize )=>size.inStock < 1;
 
     const changeTitle=({target}:ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setValue('title', target.value, {shouldValidate:true});
 
@@ -147,7 +159,6 @@ const ProductAdminPage:FC<Props> = ({ product, method='PUT' }) => {
                 const formData = new FormData();
                 formData.append('file', file);
                 const { data } = await tesloApiBase.post<{message:string}>('/admin/upload', formData);
-                
                 setValue('images', [...currentImages, data.message], {shouldValidate:true});
             }
             
@@ -158,8 +169,14 @@ const ProductAdminPage:FC<Props> = ({ product, method='PUT' }) => {
     }
 
     const onDeleteImage=(img:string)=>{
-        setValue('images', getValues('images').filter(e=> e !== img),{shouldValidate:true})
+        setValue('images', getValues('images').filter(e=>( 
+
+            e !== img ? e : setValue('deletedImages',  [...getValues('deletedImages'), img]))
+
+        ),{shouldValidate:true});
     }
+
+    
 
     const onSubmit = async( formData:IFormData )=>{
             setIsSaving(true);
@@ -303,7 +320,7 @@ const ProductAdminPage:FC<Props> = ({ product, method='PUT' }) => {
                                                 key={size.value}
                                                 control={
                                                 <Checkbox
-                                                    checked={getValues('sizes').some(s=> s.value === size.value)}
+                                                    checked={ size.inStock > 0 }
                                                 />
                                                 }
                                                 onChange={()=> onChangeSize(size) }
@@ -316,22 +333,22 @@ const ProductAdminPage:FC<Props> = ({ product, method='PUT' }) => {
                                                 }}
                                                 InputProps={{inputProps:{min:0}}}
                                                 type='number'
-                                                defaultValue={size.inStock}
+                                                value={ size.inStock }
                                                 variant="filled"
                                                 sx={{ mb: 1, width:'80px' }}
-                                                disabled={ !validateSize(size) }
+                                                disabled={ validateSize(size) }
                                             />
                                             <TextField                      /*===========SIZE PRICE============= */
                                                 label="Precio"
                                                 onChange={({target})=>{
                                                     onChangePrice( size.value, Number(target.value) )
                                                 }}
-                                                InputProps={{inputProps:{min:0}}}
+                                                InputProps={{ inputProps:{min:0} }}
                                                 type='number'
                                                 defaultValue={ size.price }
                                                 variant="filled"
                                                 sx={{ mb: 1, width:'80px' }}
-                                                disabled={ !validateSize(size) }
+                                                disabled={ validateSize(size) }
                                                 />
                                         </Box>
                                         <Divider />
@@ -417,7 +434,6 @@ const ProductAdminPage:FC<Props> = ({ product, method='PUT' }) => {
                                 {
                                     getValues('images').map( img =>{
 
-                                     const base = process.env.CLOUDINARY_BASE_URL || '';
 
                                      return(
                                         <Grid item xs={4} sm={3} key={img}>
@@ -425,7 +441,7 @@ const ProductAdminPage:FC<Props> = ({ product, method='PUT' }) => {
                                                 <CardMedia 
                                                     component='img'
                                                     className='fadeIn'
-                                                    image={ img.includes(base) ? img : `/products/${ img }` }
+                                                    image={ processUrl(img) }
                                                     alt={ img }
                                                 />
                                                 <CardActions>
@@ -488,7 +504,11 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     const { slug = ''} = query as {slug:string};
 
     if(slug === 'new'){
-        const tempProduct =  JSON.parse( JSON.stringify( new Product({sizes:defaultSizes})) );
+        const tempProduct =  JSON.parse( JSON.stringify( new Product({
+            sizes:defaultSizes,
+            type:validTypes[0],
+            gender:validGender[3]
+        })));
         delete tempProduct._id;
         tempProduct.images=[]
 
