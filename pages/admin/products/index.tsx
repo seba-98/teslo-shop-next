@@ -1,5 +1,5 @@
 import { AddOutlined, CategoryOutlined, ErrorOutlineOutlined } from '@mui/icons-material';
-import { Grid, Chip, Typography, Button, Link, Box } from '@mui/material';
+import { Grid, Chip, Typography, Button, Link, Box, CardMedia } from '@mui/material';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import { NextPage } from 'next';
 import React, { useEffect, useState } from 'react'
@@ -63,7 +63,10 @@ const ProductsPage:NextPage= () => {
             renderCell:(({row}:GridValueGetterParams)=>(
                 <NextLink passHref href={`/product/${row.slug}`}>
                     <Link >
-                        <Image alt='Product image' src={ processUrl(row.img) } width={100} height={100} />
+                        <CardMedia
+                            image={ processUrl(row.img) }
+                            component='img'
+                            sx={{borderRadius:'5px'}} />
                     </Link>
                 </NextLink>
             ))
