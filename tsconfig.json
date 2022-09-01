@@ -15,6 +15,12 @@
     "jsx": "preserve",
     "incremental": true,
     "downlevelIteration":true,
+    "baseUrl": "./", 
+    "paths": {
+      "crypto": [
+        "node_modules/crypto-js"  
+      ]
+    },
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/api/products/[slug]"],
   "exclude": ["node_modules"]

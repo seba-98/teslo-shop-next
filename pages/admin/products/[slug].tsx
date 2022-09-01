@@ -113,21 +113,19 @@ const ProductAdminPage:FC<Props> = ({ product, method='PUT' }) => {
         const updateSizes = getValues().sizes.map(s=>{
             if(s.value === size){
                 s.price =  value < 1 ? 0 : value;
-                return s
             }
             return s;
         }) 
-        setValue('sizes', updateSizes);
+        setValue('sizes', updateSizes, {shouldValidate:true});
     }
     const onChangeStock=( size:IValidSizes, value: number )=>{
         const updateSizes = getValues().sizes.map(s=>{
             if(s.value === size){
                 s.inStock = value < 1 ? 0 : value;
-                return s
             }
             return s;
         }) 
-        setValue('sizes', updateSizes);
+        setValue('sizes', updateSizes, {shouldValidate:true});
     }
 
     const onChangeSize=(size:IValidSize)=>{
@@ -333,7 +331,7 @@ const ProductAdminPage:FC<Props> = ({ product, method='PUT' }) => {
                                                 }}
                                                 InputProps={{inputProps:{min:0}}}
                                                 type='number'
-                                                value={ size.inStock }
+                                                value={ getValues('sizes').find(s=>s.value===size.value)!.inStock }
                                                 variant="filled"
                                                 sx={{ mb: 1, width:'80px' }}
                                                 disabled={ validateSize(size) }

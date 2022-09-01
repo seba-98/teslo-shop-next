@@ -19,12 +19,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   
   if (req.method === 'GET') {
     await db.connect();
-      // await Product.insertMany(seedData.initialData.products);
+      await Product.insertMany(seedData.initialData.products);
       await User.insertMany(seedData.initialData.users);
     await db.disconnect();
     
     return res.status(200).json({
-      message:'Productos añadidos'
+      message:'Productos y usuarios añadidos'
     })
   }
   if (req.method === 'DELETE') {
@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     await db.disconnect();
 
     return res.status(200).json({
-        message:'Productos eliminados'
+        message:'Productos y usuarios eliminados'
     })
     
   }

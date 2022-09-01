@@ -5,7 +5,7 @@ import { IResponseDataUser } from '../../../interfaces/server_interfaces';
 
 
 
-export default function (req: NextApiRequest, res: NextApiResponse<IResponseDataUser>) {
+export default function handler(req: NextApiRequest, res: NextApiResponse<IResponseDataUser>) {
 
     switch (req.method) {
         case 'GET':

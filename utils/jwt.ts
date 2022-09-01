@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import {SignJWT, jwtVerify, type JWTPayload} from 'jose';
 
 export const signToken=(_id:string, email:string)=>{
 
@@ -16,6 +15,32 @@ export const signToken=(_id:string, email:string)=>{
         } 
     );
 }
+
+export const apiRequestToken=async(user:string)=>{
+    
+    try {
+        if( !process.env.NEXT_PUBLIC_ALLOW_JWT || !process.env.NEXT_PUBLIC_ALLOW_USER )  throw new Error('-Error fatal- No hay semilla JWT- Revisar variables de entorno');
+        if( process.env.NEXT_PUBLIC_ALLOW_USER !== user )  throw new Error('-Error fatal- SEMILLA USUARIO JWT INVÁLIDA');
+       
+
+        return jwt.sign(
+            {
+               user, 
+            },
+            process.env.NEXT_PUBLIC_ALLOW_JWT, 
+            {
+                expiresIn: '30d'
+            } 
+        );
+        
+    } catch (error) {
+        return console.log(error);
+        
+    }
+
+    
+}
+
 
 export const isValidToken=( token:string ):Promise<string>=>{
 

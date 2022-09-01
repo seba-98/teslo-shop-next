@@ -2,9 +2,8 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { db } from '../../db';
 import { User } from '../../models';
 import bcrypt from 'bcryptjs';
-import { jwt, validatePhone } from '../../../utils';
+import { signToken, isPhone } from '../../../utils';
 import { isEmail } from '../../../utils/validateEmail';
-import { isPhone } from '../../../utils/validatePhone';
 import { IResponseDataUser } from '../../../interfaces/server_interfaces';
 
 
@@ -48,7 +47,7 @@ export const loginUser = async (req: NextApiRequest, res: NextApiResponse<IRespo
     
 
     const { role, name, _id, phoneNumber } = user;
-    const token = jwt.signToken (_id, email );
+    const token = signToken (_id, email );
 
 
    return res.status(200).json({  
@@ -122,7 +121,7 @@ export const registerUser = async(req: NextApiRequest, res: NextApiResponse<IRes
         await db.disconnect();
         
         return res.status(200).json({
-            token: jwt.signToken(_id, email),
+            token: signToken(_id, email),
             user:{
                 _id,
                 email,

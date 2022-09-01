@@ -12,7 +12,8 @@ const nextConfig = {
   },
   experimental:{
     outputStandalone:true
-  }
+  },
+  staticPageGenerationTimeout: 1000,
 }
 
 module.exports = nextConfig

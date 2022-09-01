@@ -4,7 +4,7 @@ import NextLink from 'next/link';
 import React from 'react'
 import { useForm } from 'react-hook-form';
 import { AuthLayout } from '../../components/layouts'
-import { validatePhone } from '../../utils';
+import { isPhone } from '../../utils';
 import { isEmail } from '../../utils/validateEmail';
 import {  IFormRegister } from '../../interfaces/client_interfaces/authInterfaces';
 import { useAppDispatch, useAppSelector } from '../../hooks/useReduxHooks';
@@ -89,7 +89,7 @@ import { getSession } from 'next-auth/react';
                                 
                                 {...register('phoneNumber',{
                                     required:'El teléfono es requerido',
-                                    validate:validatePhone.isPhone,
+                                    validate:isPhone,
                                 })}
                                 error={ !!errors.phoneNumber }
                                 helperText={errors.phoneNumber?.message}

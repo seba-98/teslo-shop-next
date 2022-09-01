@@ -27,9 +27,10 @@ const SlugPage:NextPage<Props> = ({product}) => {
   
   const dispatch = useAppDispatch();
   
-  const { sizes} = useSizes(product.slug);
+  const { sizes } = useSizes(product.slug);
   
   const validateStockInAllSizes = sizes ? sizes.reduce((total:number, size:ISizeElement)=>total+=size.inStock ,0) : 0;
+  
   const [stock, setStock] = useState<number>( validateStockInAllSizes );
   const [price, setPrice] = useState<number>( 0 );
   
@@ -53,8 +54,8 @@ const SlugPage:NextPage<Props> = ({product}) => {
     setPrice(price);
     setTempCartProduct({...tempCartProduct, inStock:stock, price:price});
   }
-  const selectedSize=(size:IValidSizes) => setTempCartProduct( product => ({...product, size}) )
-  
+  const selectedSize=(size:IValidSizes) => setTempCartProduct( product => ({...product, size}) );
+
   
   const addInCartFunc =()=>  dispatch( updateQuantityAction( tempCartProduct ) ); 
   
@@ -78,7 +79,6 @@ const SlugPage:NextPage<Props> = ({product}) => {
 
             {/* titulos */}
             <Typography variant='h1' component='h1'>{product.title}</Typography>
-            <Typography variant='subtitle1' component='h2'>$ {product.price}</Typography>
 
 
 
@@ -94,8 +94,14 @@ const SlugPage:NextPage<Props> = ({product}) => {
                   <Box sx={{my: 2 }} >
 
                     <Typography variant='subtitle2' component='h3' fontSize='18px'>
-                      Cantidad 
-                      <span style={{color:'grey', fontSize:'14px'}}> (Quedan {stock} unidades en stock) </span>
+                      Cantidad &nbsp;
+                      <span style={{color:'grey', fontSize:'14px'}}>
+                        {
+                        !tempCartProduct.size ? '(Seleccione un talle)' 
+                        : 
+                        `(Quedan ${stock} unidades en stock)` 
+                        }  
+                      </span>
                     </Typography>
 
                     <ItemCounter                                //COMPONENTE CONTADOR-------------------------------
@@ -182,8 +188,6 @@ export const getStaticPaths: GetStaticPaths = async (ctx) => {
       })),
       fallback: "blocking"
     }
-          
-          
 }          
           
 

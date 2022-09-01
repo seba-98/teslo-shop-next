@@ -1,4 +1,4 @@
-import { SearchOutlined, AccountCircleOutlined, ConfirmationNumberOutlined, MaleOutlined, FemaleOutlined, EscalatorWarningOutlined, VpnKeyOutlined, LoginOutlined, CategoryOutlined, AdminPanelSettings, DashboardOutlined } from '@mui/icons-material';
+import { SearchOutlined, AccountCircleOutlined, ConfirmationNumberOutlined, MaleOutlined, FemaleOutlined, EscalatorWarningOutlined, VpnKeyOutlined, LoginOutlined, CategoryOutlined, AdminPanelSettings, DashboardOutlined, EmojiEmotionsOutlined } from '@mui/icons-material';
 import { Box, Divider, Drawer, IconButton, Input, InputAdornment, List, ListItem, ListItemIcon, ListItemText, ListSubheader } from '@mui/material'
 import { useRouter } from 'next/router';
 import React, { ChangeEvent, KeyboardEvent, useState } from 'react'
@@ -49,7 +49,16 @@ const SideMenu = () => {
         >
             <Box sx={{ width: 250, paddingTop: 5 }}>
                 <List>
-                        <ListItem>
+                    { auth.user &&
+                        <ListItem >
+                            <ListItemText primary={`Bienvenido/a !! `} secondary={auth.user!.name}/>
+                            <ListItemIcon>
+                                <EmojiEmotionsOutlined />
+                            </ListItemIcon>
+                        </ListItem>
+                    }
+
+                    <ListItem>
                             <Input
                                 type='text'
                                 placeholder="Buscar..."
@@ -96,24 +105,26 @@ const SideMenu = () => {
 
                         { //------------------USER SIN LOGEARSE-------------------------
                             !auth.isLoggedIn ?
+                            <>
+                                <ListItem >
+                                    <ListItemText primary={'No hay sesión'} />
+                                </ListItem>
+                                
                                 <ListItem button onClick={()=>{ navigateTo(`/auth/login?p=${router.asPath}`) }}>
+
                                     <ListItemIcon>
                                         <VpnKeyOutlined/>
                                     </ListItemIcon>
                                     <ListItemText primary={'Ingresar'} />
                                 </ListItem>
+                            
+                            </>
 
                             :
 
                             //----------------OPCIONES USER LOGEADO----------------------------
                             <>
-                                <ListItem button>
-                                    <ListItemIcon>
-                                        <AccountCircleOutlined/>
-                                    </ListItemIcon>
-                                    <ListItemText primary={'Perfil'} />
-                                </ListItem>
-
+                               
                                 <ListItem button onClick={()=> navigateTo('/orders/history')}>
                                     <ListItemIcon>
                                         <ConfirmationNumberOutlined/>

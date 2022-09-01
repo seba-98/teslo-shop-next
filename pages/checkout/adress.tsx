@@ -31,14 +31,14 @@ const AdressPage:FC = () => {
         if(!isLoggedIn) return;
         
         reset({
-            name: user!.name || Cookies.get('name') || '',
-            lastName: Cookies.get('lastName') || '',
-            adress:user!.location ||  Cookies.get('adress') || '',
-            secondAdress: Cookies.get('secondAdress') || '',
-            postalCode: Cookies.get('postalCode')|| '',
-            country:Cookies.get('country') || '',
-            city: Cookies.get('city') || '',
-            phoneNumber:user!.phoneNumber || Cookies.get('phoneNumber') || '',
+            name          :  user!.name || Cookies.get('name') || '',
+            lastName      :  Cookies.get('lastName') || '',
+            adress        : user!.location ||  Cookies.get('adress') || '',
+            secondAdress  :  Cookies.get('secondAdress') || '',
+            postalCode    :  Cookies.get('postalCode')|| '',
+            country       : Cookies.get('country') || '',
+            city          :  Cookies.get('city') || '',
+            phoneNumber   : user!.phoneNumber || Cookies.get('phoneNumber') || '',
         })
     }, [isLoggedIn, setValue, user])
     

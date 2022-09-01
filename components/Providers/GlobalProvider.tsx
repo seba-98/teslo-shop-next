@@ -8,6 +8,9 @@ import {  getStateFromCookies, actionLoadPaymentData, authLogIn, actionLogOut } 
 // import { IUserLog } from '../../interfaces/client_interfaces';
 // import { tesloApi } from '../../axios-tesloApi';
 import { IUser } from '../../interfaces/server_interfaces/user';
+import { apiRequestToken } from '../../utils/jwt';
+import Cookies from 'js-cookie';
+import { validJwtJose } from '../../utils';
 
 interface Props{
     children: JSX.Element
@@ -32,6 +35,7 @@ const GlobalProvider:FC<Props> = ({children}) => {
     // const { user:inStateUser } = useAppSelector(state=>state.auth);
 
     const {data, status} = useSession();
+    const httpCookie= Cookies.get('httpAllow') || '';
 
 
     
@@ -64,6 +68,26 @@ const GlobalProvider:FC<Props> = ({children}) => {
     //     checkTokenJWT()
     // }, [checkTokenJWT])
 
+
+    useEffect(() => {   //GENERAMOS EL JWT PARA PROTEGER LAS RUTAS DE LA API, Y LO COLOCAMOS EN LAS COOKIES
+
+        if(httpCookie.length < 10){
+            apiRequestToken( process.env.NEXT_PUBLIC_ALLOW_USER || '' )
+            .then(e=> Cookies.set('httpAllow', e!))
+            .catch(e=>console.log(e));
+        }
+        else{
+            validJwtJose(httpCookie!)
+            .then(e=>e)
+            .catch(e=>{
+                apiRequestToken( process.env.NEXT_PUBLIC_ALLOW_USER || '' )
+                .then(e=> Cookies.set('httpAllow', e!))
+                .catch(e=>console.log(e));
+            })
+        }
+
+    }, [httpCookie])
+    
 
     useEffect(() => {
         

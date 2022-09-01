@@ -40,13 +40,13 @@ interface SeedData {
 export const initialData: SeedData = {
 
     users:[
-        // {
-        //     name       :'sebastian',
-        //     email      :'sebastianbelettieri1@gmail.com',
-        //     phoneNumber:'+2236362611',
-        //     password   :bcrypt.hashSync('seba1235', 10),
-        //     role       :'admin',
-        // },
+        {
+            name       :'sebastian',
+            email      :'sebastianbelettieri1@gmail.com',
+            phoneNumber:'+2236362611',
+            password   :bcrypt.hashSync('seba1235', 10),
+            role       :'admin',
+        },
         {
             name       :'juan',
             email      :'juan1@gmail.com',

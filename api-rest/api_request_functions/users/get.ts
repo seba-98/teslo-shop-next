@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { IResponseDataUser } from '../../../interfaces/server_interfaces'
-import { jwt } from '../../../utils';
+import { isValidToken, signToken } from '../../../utils';
 import { db } from '../../db';
 import { User } from '../../models';
 
@@ -13,7 +13,7 @@ export const checkJWT= async (req: NextApiRequest, res: NextApiResponse<IRespons
     
         let userId = '';
 
-        userId = await jwt.isValidToken(token);   
+        userId = await isValidToken(token);   
 
         await db.connect();
             const user = await User.findById( userId ).select(" _id  email role name phoneNumber").lean() ;
@@ -26,7 +26,7 @@ export const checkJWT= async (req: NextApiRequest, res: NextApiResponse<IRespons
         const {_id, email }=user;
     
         return res.status(200).json({
-            token:jwt.signToken(_id, email),
+            token:signToken(_id, email),
             user
         })
 
