@@ -71,8 +71,6 @@ import { getSession } from 'next-auth/react';
                             {...register('name',{
                                 required:'Escriba su nombre de usuario',
                                 minLength:{value:1, message:'El nombre debe tener al menos 2 caracteres'},
-                                maxLength:{value:10, message:'El nombre puede llevar hasta 20 caracteres'},
-                                
                             })}
                             error={!!errors.name}
                             helperText={errors.name?.message}
@@ -123,7 +121,6 @@ import { getSession } from 'next-auth/react';
                                 {...register('password',{
                                     required:'La contraseña es requerida',
                                     minLength:{value:6, message:'La contraseña debe tener al menos 6 caracteres'},
-                                    maxLength:{value:10, message:'La contraseña puede llevar hasta 20 caracteres'},
                                 })}
                                 error={!!errors.password}
                                 helperText={errors.password?.message}
@@ -139,7 +136,6 @@ import { getSession } from 'next-auth/react';
                                 {...register('confirmPassword' ,{
                                         required:'Vuelva a escribir su contraseña',
                                         minLength:{value:6, message:'La contraseña debe tener al menos 6 caracteres'},
-                                        maxLength:{value:10, message:'La contraseña puede llevar hasta 20 caracteres'},
                                         validate: (val: string) => {
                                             if (watch('password') != val) {
                                                 return "Las contraseñas no coinciden";
