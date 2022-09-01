@@ -90,6 +90,8 @@ const GlobalProvider:FC<Props> = ({children}) => {
     
 
     useEffect(() => {
+
+        if(httpCookie.length < 10){
         
         if(status === 'authenticated' && data.user){
             dispatch( authLogIn(data!.user as IUser) )
@@ -97,7 +99,8 @@ const GlobalProvider:FC<Props> = ({children}) => {
         if(status === 'authenticated' && !data.user)
         dispatch( actionLogOut() ) //Por las dudas limpiamos la sesión, la autenticación con provider no debería fallar
                                      // pero en caso de que lo haga genera
-        
+
+    } 
     }, [data, status]) 
 
     useEffect(() => {
