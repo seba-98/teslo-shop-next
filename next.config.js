@@ -8,7 +8,7 @@ const nextConfig = {
     pagesBufferLength: 5,
   },
   images:{
-    domains:['res.cloudinary.com', 'localhost']
+    domains:['res.cloudinary.com', 'localhost', 'https://teslos-shop-app.herokuapp.com/' ]
   },
   experimental:{
     outputStandalone:true

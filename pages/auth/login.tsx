@@ -35,15 +35,14 @@ const LoginPage = () => {
     const signed = await signIn('credentials', {
         email,
         password,
-        redirect:true,
-        callbackUrl:`${destination}`
+        redirect:false,
     },
-    
     )
 
     if(signed!.error){
-        dispatch( actionSetError(['Email o contraseña incorrectos']) )
+       return dispatch( actionSetError(['Email o contraseña incorrectos']) )
     } 
+    return router.replace(destination);
   };
 
 
