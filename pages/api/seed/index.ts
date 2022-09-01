@@ -37,8 +37,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return res.status(200).json({
         message:'Productos y usuarios eliminados'
     })
-    
   }
-
   return res.status(200).json({ message: 'invalid method' })
 }
